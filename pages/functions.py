@@ -1,0 +1,150 @@
+import requests
+import time
+import pandas as pd
+import streamlit as st
+
+@st.cache_data
+def job_search(days_posted,host,email,USAJOB_API_KEY):
+
+  url = "https://data.usajobs.gov/api/search"
+  params = {
+      "DatePosted": days_posted,                  
+      "ResultsPerPage": 500,
+      "Page": 1
+  }
+
+  headers = {
+    'Host':host,
+    'User-Agent': email,
+    'Authorization-Key': USAJOB_API_KEY 
+  }
+
+  all_jobs = []
+
+  while True:
+      print(f"Fetching page {params['Page']}...")
+      response = requests.get(url, headers=headers, params=params)
+
+      if response.status_code != 200:
+          print(f"Error {response.status_code}: {response.text}")
+          break
+
+      data = response.json()
+      jobs = data["SearchResult"]["SearchResultItems"]
+
+      if not jobs:
+          print("No more jobs.")
+          break
+
+      all_jobs.extend(jobs)
+      params["Page"] += 1
+      time.sleep(0.5)
+
+  print(f"Total jobs fetched (last {days_posted} days): {len(all_jobs)}")
+  return all_jobs
+
+
+#function to create the data frame
+def get_job_info_df(all_jobs):
+
+  job_data = []
+
+  for job in all_jobs:
+      desc = job.get("MatchedObjectDescriptor", {})
+      user_area = desc.get("UserArea", {}).get("Details", {})
+      loc_info = desc.get("PositionLocation", [{}])[0]
+      pay_info = desc.get("PositionRemuneration", [{}])[0]
+
+      job_data.append({
+          # Basic
+          "JobID": job.get("MatchedObjectId"),
+          "PositionID": desc.get("PositionID"),
+          "PositionTitle": desc.get("PositionTitle"),
+          "JobURI": desc.get("PositionURI"),
+          "ApplyURI": desc.get("ApplyURI", [None])[0],
+
+          # Location
+          "Location": desc.get("PositionLocationDisplay"),
+          "City": loc_info.get("CityName"),
+          "State": loc_info.get("CountrySubDivisionCode"),
+          "Latitude": loc_info.get("Latitude"),
+          "Longitude": loc_info.get("Longitude"),
+
+          # Agency Info
+          "Agency": desc.get("OrganizationName"),
+          "Department": desc.get("DepartmentName"),
+
+          # Job Type Info
+          "JobCategory": desc.get("JobCategory", [{}])[0].get("Name"),
+          "JobGrade": desc.get("JobGrade", [{}])[0].get("Code"),
+          "PositionScheduleCode": desc.get("PositionSchedule", [{}])[0].get("Code"),
+          "PositionOfferingTypeCode": desc.get("PositionOfferingType", [{}])[0].get("Code"),
+
+          # Pay
+          "SalaryMin": float(pay_info.get("MinimumRange", 0)),
+          "SalaryMax": float(pay_info.get("MaximumRange", 0)),
+          "SalaryType": pay_info.get("RateIntervalCode"),
+          "SalaryDescription": pay_info.get("Description"),
+
+          # Dates
+          "PostedDate": desc.get("PublicationStartDate"),
+          "EndDate": desc.get("ApplicationCloseDate"),
+          "StartDate": desc.get("PositionStartDate"),
+          "PositionEndDate": desc.get("PositionEndDate"),
+
+          # Descriptions
+          "JobSummary": user_area.get("JobSummary"),
+          "MajorDuties": user_area.get("MajorDuties", [None])[0],
+          "QualificationSummary": desc.get("QualificationSummary"),
+
+          # Optional Details
+          "Education": user_area.get("Education"),
+          "Evaluations": user_area.get("Evaluations"),
+          "HowToApply": user_area.get("HowToApply"),
+          "WhatToExpectNext": user_area.get("WhatToExpectNext"),
+          "RequiredDocuments": user_area.get("RequiredDocuments"),
+          "PromotionPotential": user_area.get("PromotionPotential"),
+          "Relocation": user_area.get("Relocation"),
+
+          # Contact Info
+          "AgencyEmail": user_area.get("AgencyContactEmail"),
+          "AgencyPhone": user_area.get("AgencyContactPhone"),
+
+          # Eligibility & Access
+          "HiringPath": ", ".join(user_area.get("HiringPath", [])),
+          "KeyRequirements": ", ".join(user_area.get("KeyRequirements", [])),
+          "SecurityClearance": user_area.get("SecurityClearance"),
+          "TeleworkEligible": user_area.get("TeleworkEligible"),
+          "Remote": user_area.get("RemoteIndicator"),
+          "FinancialDisclosure": user_area.get("FinancialDisclosure"),
+          "BargainingUnitStatus": user_area.get("BargainingUnitStatus"),
+
+          # Meta
+          "TotalOpenings": user_area.get("TotalOpenings"),
+          "WithinArea": user_area.get("WithinArea"),
+          "CommuteDistance": user_area.get("CommuteDistance"),
+          "ServiceType": user_area.get("ServiceType"),
+          "AnnouncementClosingType": user_area.get("AnnouncementClosingType"),
+
+          # Benefits
+          "Benefits": user_area.get("Benefits"),
+          "BenefitsUrl": user_area.get("BenefitsUrl"),
+          "BenefitsDisplayDefaultText": user_area.get("BenefitsDisplayDefaultText")
+      })
+
+  # Create DataFrame
+ 
+  df = pd.DataFrame(job_data)
+  df.fillna('N/A',inplace=True)
+  df=df.map(lambda x:'N/A' if x is None else x)
+
+  #change the date format
+  date_columns=['PostedDate','EndDate','StartDate','PositionEndDate']
+
+  for date in date_columns:
+       
+       df[date]=pd.to_datetime(df[date]).apply(lambda x:x.strftime('%Y-%m-%d'))
+  
+
+  return df
+
