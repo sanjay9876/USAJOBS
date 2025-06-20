@@ -2,6 +2,10 @@ import requests
 import time
 import pandas as pd
 import streamlit as st
+import os
+#import pdfkit
+from weasyprint import HTML
+import re
 
 @st.cache_data
 def job_search(days_posted,host,email,USAJOB_API_KEY):
@@ -147,4 +151,80 @@ def get_job_info_df(all_jobs):
   
 
   return df
+
+
+#create the html page
+def render_job_html(row):
+    def format_text(text):
+        return str(text).replace("\n", "<br>") if text and text != "N/A" else "N/A"
+
+    summary = format_text(row['JobSummary'])
+    education = format_text(row['Education'])
+    duties = format_text(row['MajorDuties'])
+    qualifications = format_text(row['QualificationSummary'])
+    evaluations=format_text(row['Evaluations'])
+    whattoexpect=format_text(row['WhatToExpectNext'])
+    requiredocs=format_text(row['RequiredDocuments'])
+    how_to_apply = format_text(row['HowToApply'])
+    salary_desc = (
+        f"${row['SalaryMin']:,.0f} - ${row['SalaryMax']:,.0f} {row['SalaryType']}"
+        if row['SalaryMin'] != "N/A" else "N/A"
+    )
+
+    html = f"""
+    <div style="width: 100%; font-family: Arial; font-size: 14px; line-height: 1.6; padding: 5px;">
+        <p><b>Job Title:</b> {row['PositionTitle'].upper()}</p>
+        <b>Agency:</b> {row['Agency']}<br>
+        <b>Department:</b> {row['Department']}<br>
+        <b>Location:</b> {row['Location']} ({row['City']}, {row['State']})<br>
+        <b>Posted:</b> {row['PostedDate']} &nbsp;|&nbsp; <b>Closes:</b> {row['EndDate']}<br>
+        <b>Salary:</b> {salary_desc}<br>
+        <b>Schedule:</b> {row['PositionScheduleCode']} &nbsp;|&nbsp;
+        <b>Type:</b> {row['PositionOfferingTypeCode']}<br>
+        <b>Grade:</b> {row['JobGrade']} &nbsp;|&nbsp;
+        <b>Category:</b> {row['JobCategory']}<br>
+        <b>Hiring Path:</b> {row['HiringPath']}<br>
+        <b>Security Clearance:</b> {row['SecurityClearance']}<br>
+        <b>Remote Eligible:</b> {row['Remote']}<br>
+        <hr style="margin: 0.5em 0;">
+        <p style='text-align: justify;'><b>Summary:</b><br>{summary}</p>
+        <p style='text-align: justify;'><b>Education:</b><br>{education}</p>
+        <p style='text-align: justify;'><b>Major Duties:</b><br>{duties}</p>
+        <p style='text-align: justify;'><b>Qualifications:</b><br>{qualifications}</p>
+        <p style='text-align: justify;'><b>Evaluations:</b><br>{evaluations}</p>
+        <p style='text-align: justify;'><b>WhatToExpectNext:</b><br>{whattoexpect}</p>
+        <p style='text-align: justify;'><b>Requirements:</b><br>{requiredocs}</p>
+        <p style='text-align: justify;'><b>How to Apply:</b><br>{how_to_apply}</p>
+        <b>Contact:</b> {row['AgencyEmail']} | {row['AgencyPhone']}<br>
+        <b><a href="{row['ApplyURI']}" target="_blank">Apply Here</a></b>
+    </div>
+    """
+    return html
+
+def save_job_as_pdf(html_content, filename="job_description.pdf"):
+    os.makedirs("saved_pdfs", exist_ok=True)
+    output_path = os.path.join("saved_pdfs", filename)
+    HTML(string=html_content).write_pdf(output_path)
+    # options = {
+    #     'page-size': 'Letter',
+    #     'encoding': "UTF-8",
+    #     'quiet': ''
+    # }
+
+    # # Output path
+    # output_path = os.path.join("saved_pdfs", filename)
+
+    # # Create directory if needed
+    # os.makedirs("saved_pdfs", exist_ok=True)
+
+    # # Write to PDF
+    # pdfkit.from_string(html_content, output_path, options=options)
+
+    return output_path
+
+
+def clean_filename(filename):
+    # Remove invalid characters for all OSes
+    return re.sub(r'[\\/*?:"<>|]', "_", filename)
+
 
