@@ -2,8 +2,8 @@ import requests
 import time
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 import os
-#import pdfkit
 from weasyprint import HTML
 from datetime import datetime
 import re
@@ -233,5 +233,42 @@ def save_job_as_pdf(html_content, filename="job_description.pdf"):
 def clean_filename(filename):
     # Remove invalid characters for all OSes
     return re.sub(r'[\\/*?:"<>|]', "_", filename)
+
+
+
+def show_clock():
+    html_code = """
+    <div style="
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        background-color: black;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: limegreen;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        z-index: 1000;
+        font-family: monospace;"
+        id="clock">
+    </div>
+
+    <script>
+      function updateTime() {
+        const clockElement = document.getElementById('clock');
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString();
+        const dayName = now.toLocaleDateString('en-US', { weekday: 'long' });
+        const dateStr = now.toLocaleDateString('en-US');
+        clockElement.textContent = `🕒 ${timeStr}, ${dayName}, ${dateStr}`;
+      }
+      setInterval(updateTime, 1000);
+      updateTime();
+    </script>
+    """
+    components.html(html_code, height=0, width=0)
+
+
 
 

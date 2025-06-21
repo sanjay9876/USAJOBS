@@ -2,6 +2,8 @@ import os
 import sys
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
+
 import time
 import macrofiles.functions as functions
 import requests
@@ -22,6 +24,8 @@ st.set_page_config(
 usajobapi=os.getenv('usajobapi')
 email='bhattathakur2015@gmail.com'
 host='data.usajobs.gov'
+
+
 
 #job posted days
 label_text="DAYS SINCE JOB POSTED (DEFAULT: 1)"
@@ -101,6 +105,20 @@ if temp_df.empty:
 
 st.sidebar.write(f"TOTAL JOBS: {len(temp_df)}")
 
+#show clock
+
+# #from streamlit.components.v1 import html
+
+# components.html("<div style='position: fixed; top: 10px; right: 20px; color: limegreen;'>TEST CLOCK</div>", height=10, width=10)
+
+# st.markdown("""
+# <div style='position: fixed; top: 10px; right: 20px; color: limegreen; font-weight: bold;'>
+#   TEST CLOCK MARKDOWN
+# </div>
+# """, unsafe_allow_html=True)
+
+# functions.show_clock()
+
 
 #create the header
 header_html = '<div style="margin-bottom: 20px; font-size: 15px; color:blue">YOUR SELECTION\n'
@@ -166,6 +184,10 @@ if debug:st.dataframe(loc_df)
 if debug:st.dataframe(temp_df)
 
 show_job=st.sidebar.checkbox("JOB DETAILS, DOWNLOAD (⬇️), APPLY")
+
+#promot if not selected
+if not show_job:
+    st.header("Select JOB DETAILS, DOWNLOAD, APPLY for JOB INFORMATION")
 #change the css feature of the button
 st.markdown("""
     <style>
