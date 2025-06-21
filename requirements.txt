@@ -1,0 +1,7 @@
+pandas
+streamlit
+requests
+folium
+streamlit-folium
+weasyprint
+pytz
