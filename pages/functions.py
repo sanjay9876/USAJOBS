@@ -5,7 +5,12 @@ import streamlit as st
 import os
 #import pdfkit
 from weasyprint import HTML
+from datetime import datetime
 import re
+import pytz
+
+
+est_timezone=pytz.timezone('US/EASTERN')
 
 @st.cache_data
 def job_search(days_posted,host,email,USAJOB_API_KEY):
@@ -44,12 +49,17 @@ def job_search(days_posted,host,email,USAJOB_API_KEY):
       params["Page"] += 1
       time.sleep(0.5)
 
-  print(f"Total jobs fetched (last {days_posted} days): {len(all_jobs)}")
+  #print(f"Total jobs fetched (last {days_posted} days): {len(all_jobs)}")
+  #st.write(f"Total jobs fetched (last {days_posted} days): {len(all_jobs)}")
   return all_jobs
 
 
 #function to create the data frame
 def get_job_info_df(all_jobs):
+  if len(all_jobs)<1:
+      st.warning("NO JOBS FOUND ! INCREASE THE POSTED DAYS !!")
+      st.stop()
+
 
   job_data = []
 
@@ -202,9 +212,17 @@ def render_job_html(row):
     return html
 
 def save_job_as_pdf(html_content, filename="job_description.pdf"):
+    # Add printed date at the top
+    printed_date = f'{datetime.now(est_timezone).strftime("%Y-%m-%d, %H:%S")}'
+    header = f"""
+    <div style="text-align: right; font-size: 10px; margin-bottom: 20px;">
+        created on: {printed_date}
+    </div>
+    """
     os.makedirs("saved_pdfs", exist_ok=True)
     output_path = os.path.join("saved_pdfs", filename)
-    HTML(string=html_content).write_pdf(output_path)
+    #HTML(string=printed_date+html_content).write_pdf(output_path)
+    HTML(string=header+html_content).write_pdf(output_path)
     # options = {
     #     'page-size': 'Letter',
     #     'encoding': "UTF-8",
