@@ -21,13 +21,12 @@ st.set_page_config(
 )
 
 #usajobapi
-local=True
+local=False
+streamlit_web=True
 if local:
     usajobapi=os.getenv('usajobapi')
     usajobemail=os.getenv('usajobemail')
     usajobhost=os.getenv('usajobhost')
-
-streamlit_web=False
 
 if streamlit_web:
     usajobapi=st.secrets['usajob']['usajobapi']
