@@ -213,7 +213,7 @@ def render_job_html(row):
 
 def save_job_as_pdf(html_content, filename="job_description.pdf"):
     # Add printed date at the top
-    printed_date = f'{datetime.now(est_timezone).strftime("%Y-%m-%d, %H:%S")}'
+    printed_date = f'{datetime.now(est_timezone).strftime("%Y-%m-%d, %H:%M:%S")}'
     webpage='https://usajobs.streamlit.app/'
     header = f"""
     <div style="text-align: right; font-size: 10px; margin-bottom: 20px;">
