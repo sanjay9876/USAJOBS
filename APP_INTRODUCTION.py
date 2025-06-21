@@ -25,14 +25,14 @@ intro_html = """
             <ul>
                 <li>Days since posted</li>
                 <li>State</li>
-                <li>Job Ditle</li>
+                <li>Job Title</li>
                 <li>Department</li>
                 <li>Posted Date & End Date</li>
                 <li>Security Type</>
                 <li>Hiring Type</>
             </ul>
         </li>
-        <li>Search results are displayed on a map hovering over which gives Job Information (Title, Posted Date, End Date).</li>
+        <li>Search results are displayed on a map hovering over which gives Job Information (Job Title, Posted Date, End Date).</li>
     </ul>
 
 
@@ -46,7 +46,7 @@ intro_html = """
     </ul>
 
 <p style="margin-top: 20px; font-style: italic; color: #555;">
-        👉 Start by selecting your filters in the sidebar to find opportunities that match your interests.
+        👉 Start with JOB SEARCH in the sidebar to find opportunities that match your interests.
     </p>
 </div>
 """

@@ -154,7 +154,7 @@ m.fit_bounds(bounds)
 # Display map in Streamlit
 #st_data = st_folium(m, use_container_width=True, height=800)
 with st.spinner("Loading map .."):
-  st_data = st_folium(m, use_container_width=True, height=800)
+  st_data = st_folium(m, use_container_width=True, height=500)
 
 
 if debug:st.dataframe(loc_df)
