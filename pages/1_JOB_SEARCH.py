@@ -21,9 +21,21 @@ st.set_page_config(
 )
 
 #usajobapi
-usajobapi=os.getenv('usajobapi')
-email='bhattathakur2015@gmail.com'
-host='data.usajobs.gov'
+local=True
+if local:
+    usajobapi=os.getenv('usajobapi')
+    usajobemail=os.getenv('usajobemail')
+    usajobhost=os.getenv('usajobhost')
+
+streamlit_web=False
+
+if streamlit_web:
+    usajobapi=st.secrets['usajob']['usajobapi']
+    usajobemail=st.secrets['usajob']['usajobemail']
+    usajobehost=st.secrets['usajob']['usajobhost']
+
+# email='bhattathakur2015@gmail.com'
+# host='data.usajobs.gov'
 
 
 
@@ -31,7 +43,7 @@ host='data.usajobs.gov'
 label_text="DAYS SINCE JOB POSTED (DEFAULT: 1)"
 posted_days=st.sidebar.number_input(min_value=1,max_value=60,value=1,label=label_text)
 
-all_jobs=functions.job_search(days_posted=posted_days,host=host,email=email,USAJOB_API_KEY=usajobapi)
+all_jobs=functions.job_search(days_posted=posted_days,host=usajobhost,email=usajobemail,USAJOB_API_KEY=usajobapi)
 
 raw_df=functions.get_job_info_df(all_jobs)
 
