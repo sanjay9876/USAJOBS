@@ -243,24 +243,3 @@ for _, row in temp_df.iterrows():
 
 
         st.markdown("---")
-
-
-    # generate HTML content for one job
-    #job_html = functions.render_job_html(row)
-
-    # create filename with job title and date
-    # raw_title = row['PositionTitle'].replace(" ", "_")
-    # job_title=functions.clean_filename(raw_title)
-    # filename = f"{job_title}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-
-    # save as PDF
-    #pdf_path = functions.save_job_as_pdf(job_html, filename)
-
-    # # download button in Streamlit
-    # with open(pdf_path, "rb") as f:
-    #     st.download_button(
-    #         label="📄 Download Job Description as PDF",
-    #         data=f,
-    #         file_name=filename,
-    #         mime="application/pdf"
-    #     )

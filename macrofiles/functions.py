@@ -219,29 +219,13 @@ def save_job_as_pdf(html_content, filename="job_description.pdf"):
         created on: {printed_date}
     </div>
     """
-    #os.makedirs("saved_pdfs", exist_ok=True)
-    #output_path = os.path.join("saved_pdfs", filename)
-    #HTML(string=printed_date+html_content).write_pdf(output_path)
+   
     # Create in-memory PDF
     pdf_buffer = BytesIO()
     full_html=header+html_content
     HTML(string=full_html).write_pdf(target=pdf_buffer)
     pdf_buffer.seek(0)  # Move to the beginning of the file
-    #HTML(string=header+html_content).write_pdf(output_path)
-    # options = {
-    #     'page-size': 'Letter',
-    #     'encoding': "UTF-8",
-    #     'quiet': ''
-    # }
 
-    # # Output path
-    # output_path = os.path.join("saved_pdfs", filename)
-
-    # # Create directory if needed
-    # os.makedirs("saved_pdfs", exist_ok=True)
-
-    # # Write to PDF
-    # pdfkit.from_string(html_content, output_path, options=options)
 
     return pdf_buffer
 
