@@ -31,7 +31,7 @@ if local:
 if streamlit_web:
     usajobapi=st.secrets['usajob']['usajobapi']
     usajobemail=st.secrets['usajob']['usajobemail']
-    usajobehost=st.secrets['usajob']['usajobhost']
+    usajobhost=st.secrets['usajob']['usajobhost']
 
 # email='bhattathakur2015@gmail.com'
 # host='data.usajobs.gov'
