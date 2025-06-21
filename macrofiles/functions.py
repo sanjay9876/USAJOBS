@@ -8,6 +8,7 @@ from weasyprint import HTML
 from datetime import datetime
 import re
 import pytz
+from io import BytesIO
 
 
 est_timezone=pytz.timezone('US/EASTERN')
@@ -182,7 +183,7 @@ def render_job_html(row):
     )
 
     html = f"""
-    <div style="width: 100%; font-family: Arial; font-size: 14px; line-height: 1.6; padding: 5px;">
+        <div style="width: 100%; font-family: Arial; font-size: 14px; line-height: 1.6; padding: 5px;">
         <p><b>Job Title:</b> {row['PositionTitle'].upper()}</p>
         <b>Agency:</b> {row['Agency']}<br>
         <b>Department:</b> {row['Department']}<br>
@@ -206,8 +207,7 @@ def render_job_html(row):
         <p style='text-align: justify;'><b>Requirements:</b><br>{requiredocs}</p>
         <p style='text-align: justify;'><b>How to Apply:</b><br>{how_to_apply}</p>
         <b>Contact:</b> {row['AgencyEmail']} | {row['AgencyPhone']}<br>
-        <b><a href="{row['ApplyURI']}" target="_blank">Apply Here</a></b>
-    </div>
+        <b><a href="{row['ApplyURI']}" target="_blank">Apply Here</a></b></div>
     """
     return html
 
@@ -219,10 +219,15 @@ def save_job_as_pdf(html_content, filename="job_description.pdf"):
         created on: {printed_date}
     </div>
     """
-    os.makedirs("saved_pdfs", exist_ok=True)
-    output_path = os.path.join("saved_pdfs", filename)
+    #os.makedirs("saved_pdfs", exist_ok=True)
+    #output_path = os.path.join("saved_pdfs", filename)
     #HTML(string=printed_date+html_content).write_pdf(output_path)
-    HTML(string=header+html_content).write_pdf(output_path)
+    # Create in-memory PDF
+    pdf_buffer = BytesIO()
+    full_html=header+html_content
+    HTML(string=full_html).write_pdf(target=pdf_buffer)
+    pdf_buffer.seek(0)  # Move to the beginning of the file
+    #HTML(string=header+html_content).write_pdf(output_path)
     # options = {
     #     'page-size': 'Letter',
     #     'encoding': "UTF-8",
@@ -238,7 +243,7 @@ def save_job_as_pdf(html_content, filename="job_description.pdf"):
     # # Write to PDF
     # pdfkit.from_string(html_content, output_path, options=options)
 
-    return output_path
+    return pdf_buffer
 
 
 def clean_filename(filename):

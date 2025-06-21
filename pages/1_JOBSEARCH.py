@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import streamlit as st
 import time
-import functions
+import macrofiles.functions as functions
 import requests
 import folium
 from streamlit_folium import st_folium
@@ -217,20 +217,20 @@ for _, row in temp_df.iterrows():
                 <div style='padding: 15px; background-color: #f8f8f8;
                             border: 1px solid #ddd; border-radius: 8px;
                             margin-bottom: 0px;'>
-                    {job_html}
+                {job_html}
                 </div>
                 """,
                 unsafe_allow_html=True
             )
         with col2:
-            with open(pdf_path, "rb") as f:
-                st.download_button(
-                    label="⬇️  Download PDF",
-                    data=f,
-                    file_name=filename,
-                    mime="application/pdf",
-                    key=f"download_{row['JobID']}"
-                )
+           # with open(pdf_path, "rb") as f:
+            st.download_button(
+                label="⬇️  Download PDF",
+                data=pdf_path,
+                file_name=filename,
+                mime="application/pdf",
+                key=f"download_{row['JobID']}"
+            )
 
             #want to include apply funciton here
             st.markdown(
