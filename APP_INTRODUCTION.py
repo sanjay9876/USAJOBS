@@ -10,7 +10,7 @@ intro_html = """
 <div style="font-family: 'Times New Roman', sans-serif; padding: 30px; background-color: #f7f9fa; border-radius: 10px;">
     <h2 style="color: #003366;">📌 Welcome to the Government Job Finder</h2>
     <p>This Streamlit app helps you explore and track U.S. government job opportunities using data from the 
-    <a href="https://www.usajobs.gov" target="_blank" style="color: #1a73e8;">USAJobs.gov</a> TAPI.</p>
+    <a href="https://www.usajobs.gov" target="_blank" style="color: #1a73e8;">USAJobs.gov</a> API.</p>
     <hr>
     <h3 style="color: #2c3e50;">📂 OVERVIEW</h3>
     <ul style="line-height: 1.6;">

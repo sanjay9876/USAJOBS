@@ -50,17 +50,13 @@ def job_search(days_posted,host,email,USAJOB_API_KEY):
       params["Page"] += 1
       time.sleep(0.5)
 
-  #print(f"Total jobs fetched (last {days_posted} days): {len(all_jobs)}")
-  #st.write(f"Total jobs fetched (last {days_posted} days): {len(all_jobs)}")
   return all_jobs
-
 
 #function to create the data frame
 def get_job_info_df(all_jobs):
   if len(all_jobs)<1:
       st.warning("NO JOBS FOUND ! INCREASE THE POSTED DAYS !!")
       st.stop()
-
 
   job_data = []
 
@@ -156,11 +152,8 @@ def get_job_info_df(all_jobs):
   #change the date format
   date_columns=['PostedDate','EndDate','StartDate','PositionEndDate']
 
-  for date in date_columns:
-       
+  for date in date_columns:   
        df[date]=pd.to_datetime(df[date]).apply(lambda x:x.strftime('%Y-%m-%d'))
-  
-
   return df
 
 
@@ -214,7 +207,7 @@ def render_job_html(row):
 def save_job_as_pdf(html_content, filename="job_description.pdf"):
     # Add printed date at the top
     printed_date = f'{datetime.now(est_timezone).strftime("%Y-%m-%d, %H:%M:%S")}'
-    webpage='https://usajobs.streamlit.app/'
+    webpage='https://usa-jobs.streamlit.app/'
     header = f"""
     <div style="text-align: right; font-size: 10px; margin-bottom: 20px;">
         created on: {printed_date} EST source: {webpage}
@@ -227,15 +220,12 @@ def save_job_as_pdf(html_content, filename="job_description.pdf"):
     HTML(string=full_html).write_pdf(target=pdf_buffer)
     pdf_buffer.seek(0)  # Move to the beginning of the file
 
-
     return pdf_buffer
 
 
 def clean_filename(filename):
     # Remove invalid characters for all OSes
     return re.sub(r'[\\/*?:"<>|]', "_", filename)
-
-
 
 def show_clock():
     html_code = """

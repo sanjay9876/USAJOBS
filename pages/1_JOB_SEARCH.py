@@ -33,11 +33,6 @@ if streamlit_web:
     usajobemail=st.secrets['usajob']['usajobemail']
     usajobhost=st.secrets['usajob']['usajobhost']
 
-# email='bhattathakur2015@gmail.com'
-# host='data.usajobs.gov'
-
-
-
 #job posted days
 label_text="DAYS SINCE JOB POSTED (DEFAULT: 1)"
 posted_days=st.sidebar.number_input(min_value=1,max_value=60,value=1,label=label_text)
@@ -46,19 +41,12 @@ all_jobs=functions.job_search(days_posted=posted_days,host=usajobhost,email=usaj
 
 raw_df=functions.get_job_info_df(all_jobs)
 
-#debug
-debug=False
-if debug:st.dataframe(raw_df.head(5))
-
 #temp_df
 temp_df=raw_df.copy()
-
 
 filter_list=[]
 info_dict={}
 info_dict['posted_days']=posted_days
-
-
 
 #select a state
 states=sorted(temp_df['State'].unique())
@@ -75,10 +63,6 @@ department=sorted(temp_df['Department'].unique())
 department=st.sidebar.selectbox('SELECT DEPARTMENT',options=department,index=None)
 if department:temp_df=temp_df.query('Department == @department');info_dict['department']=department
 
-#posted_date
-# if temp_df.empty:
-#     st.warning("NO JOBS FOUND !!!")
-#     st.stop()
 try:
     posted_date=sorted(temp_df['PostedDate'].unique())
 except:
@@ -116,21 +100,6 @@ if temp_df.empty:
 
 st.sidebar.write(f"TOTAL JOBS: {len(temp_df)}")
 
-#show clock
-
-# #from streamlit.components.v1 import html
-
-# components.html("<div style='position: fixed; top: 10px; right: 20px; color: limegreen;'>TEST CLOCK</div>", height=10, width=10)
-
-# st.markdown("""
-# <div style='position: fixed; top: 10px; right: 20px; color: limegreen; font-weight: bold;'>
-#   TEST CLOCK MARKDOWN
-# </div>
-# """, unsafe_allow_html=True)
-
-# functions.show_clock()
-
-
 #create the header
 header_html = '<div style="margin-bottom: 20px; font-size: 15px; color:blue">YOUR SELECTION\n'
 for key, value in info_dict.items():
@@ -139,13 +108,9 @@ header_html += '</div>'
 
 st.markdown(header_html,unsafe_allow_html=True)
 
-
 #show the latitude and longitude of the location in the map
 loc_df=temp_df[['Latitude','Longitude']]
 loc_df=loc_df.rename(columns={'Latitude':'latitude','Longitude':'longitude'})
-
-
-
 
 #apply function to rows to get the job information
 
@@ -185,12 +150,7 @@ m.fit_bounds(bounds)
 with st.spinner("Loading map .."):
   st_data = st_folium(m, use_container_width=True, height=500)
 
-
 if debug:st.dataframe(loc_df)
-
-
-
-
 
 if debug:st.dataframe(temp_df)
 
@@ -220,6 +180,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
 #create the job info page
 if not show_job:st.stop()
 for _, row in temp_df.iterrows():
@@ -235,11 +196,6 @@ for _, row in temp_df.iterrows():
     filename = f"{job_title}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
     # save as PDF
     pdf_path = functions.save_job_as_pdf(job_html, filename)
-
-
-    
-    
-    #     st.markdown("---")
     
     with st.container():
         col1, col2 = st.columns([7, 1])
