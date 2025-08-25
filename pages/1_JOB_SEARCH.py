@@ -34,7 +34,7 @@ if streamlit_web:
     usajobhost=st.secrets['usajob']['usajobhost']
 
 #job posted days
-label_text="DAYS SINCE JOB POSTED (DEFAULT: 1)"
+label_text="Days since job posted (Default: 1)"
 posted_days=st.sidebar.number_input(min_value=1,max_value=60,value=1,label=label_text)
 
 all_jobs=functions.job_search(days_posted=posted_days,host=usajobhost,email=usajobemail,USAJOB_API_KEY=usajobapi)
@@ -50,17 +50,17 @@ info_dict['posted_days']=posted_days
 
 #select a state
 states=sorted(temp_df['State'].unique())
-state=st.sidebar.selectbox('SELECT STATE',options=states,index=None)
+state=st.sidebar.selectbox('Select State',options=states,index=None)
 if state:temp_df=temp_df.query('State == @state');info_dict['state']=state
 
 #select jobtitle
 job_titles=sorted(temp_df['PositionTitle'].unique())
-job=st.sidebar.selectbox('SELECT JOB TITLE',options=job_titles,index=None)
+job=st.sidebar.selectbox('Select Job Title',options=job_titles,index=None)
 if job:temp_df=temp_df.query('PositionTitle == @job');info_dict['job_title']=job
 
 #department
 department=sorted(temp_df['Department'].unique())
-department=st.sidebar.selectbox('SELECT DEPARTMENT',options=department,index=None)
+department=st.sidebar.selectbox('Select Department',options=department,index=None)
 if department:temp_df=temp_df.query('Department == @department');info_dict['department']=department
 
 try:
@@ -72,23 +72,23 @@ if posted:temp_df=temp_df.query('PostedDate == @posted');info_dict['posted']=pos
 
 #end_date
 end_date=sorted(temp_df['EndDate'].unique())
-end=st.sidebar.selectbox('SELECT END DATE',options=end_date,index=None)
+end=st.sidebar.selectbox('Select End Date',options=end_date,index=None)
 if end:temp_df=temp_df.query('EndDate == @end');info_dict['end_date']=end
 
-#end_date
+#security_clearance
 security_clearence=sorted(temp_df['SecurityClearance'].unique())
-security=st.sidebar.selectbox('SELECT SECURITY TYPE',options=security_clearence,index=None)
+security=st.sidebar.selectbox('Select Security Type',options=security_clearence,index=None)
 if security:temp_df=temp_df.query('SecurityClearance == @security');info_dict['security_clearance']=security
 
 #hiring path
 hiring_path=sorted(temp_df['HiringPath'].unique())
-hiring=st.sidebar.selectbox('SELECT HIRING TYPE',options=hiring_path,index=None)
+hiring=st.sidebar.selectbox('Select Hiring Type',options=hiring_path,index=None)
 if hiring:temp_df=temp_df.query('HiringPath == @hiring');info_dict['hiring_path']=hiring
 
 
 #remote
 #remote=sorted(temp_df['SecurityClearance'].unique())
-remote=st.sidebar.checkbox('REMOTE JOB')
+remote=st.sidebar.checkbox('Remote Job')
 if remote:temp_df=temp_df.query('Remote == @remote');filter_list.append(remote)
 
 #filter_list.append(posted_days)
@@ -98,10 +98,10 @@ if temp_df.empty:
     st.warning("NO JOBS FOUND !!!")
     st.stop()
 
-st.sidebar.write(f"TOTAL JOBS: {len(temp_df)}")
+st.sidebar.write(f"Total Jobs: {len(temp_df)}")
 
 #create the header
-header_html = '<div style="margin-bottom: 20px; font-size: 15px; color:blue">YOUR SELECTION\n'
+header_html = '<div style="margin-bottom: 20px; font-size: 15px; color:blue">Your Selections\n'
 for key, value in info_dict.items():
     header_html += f'  <div><strong style="display: inline-block; width: 150px;">{key.upper()}:</strong> {str(value).upper()}</div>\n'
 header_html += '</div>'
@@ -154,11 +154,11 @@ if debug:st.dataframe(loc_df)
 
 if debug:st.dataframe(temp_df)
 
-show_job=st.sidebar.checkbox("JOB DETAILS, DOWNLOAD (⬇️), APPLY")
+show_job=st.sidebar.checkbox("Job Details, Download (⬇️), Apply")
 
 #promot if not selected
 if not show_job:
-    st.header("Select JOB DETAILS, DOWNLOAD, APPLY for JOB INFORMATION")
+    st.header("Select Job Details, Download, Apply for Job Information")
 #change the css feature of the button
 st.markdown("""
     <style>

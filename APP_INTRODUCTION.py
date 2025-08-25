@@ -12,14 +12,14 @@ intro_html = """
     <p>This Streamlit app helps you explore and track U.S. government job opportunities using data from the 
     <a href="https://www.usajobs.gov" target="_blank" style="color: #1a73e8;">USAJobs.gov</a> API.</p>
     <hr>
-    <h3 style="color: #2c3e50;">📂 OVERVIEW</h3>
+    <h3 style="color: #2c3e50;">📂 Overview</h3>
     <ul style="line-height: 1.6;">
         <li>This application provides real-time access to federal job data.</li>
         <li>It uses filters and mapping tools to enhance job discovery.</li>
         <li>Jobs can be saved as PDF and accessed later.</li>
     </ul>
 
-<h3 style="color: #2c3e50;">🔎 JOBSEARCH</h3>
+<h3 style="color: #2c3e50;">🔎 Job Search</h3>
     <ul style="line-height: 1.6;">
         <li>Filter by:
             <ul>
@@ -37,7 +37,7 @@ intro_html = """
 
 
 
-<h3 style="color: #2c3e50;">🛠️ FUNCTIONS</h3>
+<h3 style="color: #2c3e50;">🛠️ Functions</h3>
     <ul style="line-height: 1.6;">
         <li><strong>Interactive Map:</strong> View job locations on a map.</li>
         <li><strong>Job Details:</strong> Click to see full job description.</li>
